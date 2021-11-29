@@ -22,6 +22,11 @@ public class TargetSelector : MonoBehaviour
        
         Debug.DrawRay(ray.origin, ray.direction * 100);
 
+        /*
+         * Sends out a raycast.
+         * If the raycast hits an enemy cannon, it will
+         * alert the Rovers to attack it.
+         */
         if (Input.GetMouseButtonDown(0))
         {
             if(Physics.Raycast(ray, out hit, 250))

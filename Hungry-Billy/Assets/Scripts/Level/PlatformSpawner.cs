@@ -6,10 +6,13 @@ public class PlatformSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject platformPrefab;
 
+    // CameraMover script attached to the camera
     [SerializeField] private CameraMover camera;
 
+    // Current platforms on scene
     [SerializeField] private GameObject[] platforms;
 
+    // The total number of platforms spawned at once
     [SerializeField] private int platformsVisibleOnEachSide = 2;
 
     // The intervals between the targets the camera must reach
@@ -24,7 +27,8 @@ public class PlatformSpawner : MonoBehaviour
 
     /// <summary>
     /// Creates a new platform when given the xPosition it
-    /// needs to be spawned at.
+    /// needs to be spawned at. Then generates the layout of 
+    /// each platform in the Platform Generation class.
     /// </summary>
     /// <param name="xPosition">xPosition of the new platform</param>
     private void CreateNewPlatform(float xPosition)
@@ -35,6 +39,7 @@ public class PlatformSpawner : MonoBehaviour
             {
                 GameObject newPlatform = Instantiate(platformPrefab, new Vector3(xPosition, 0.0f, 0.0f), Quaternion.identity);
                 platforms[i] = newPlatform;
+                newPlatform.GetComponent<PlatformGeneration>().GenerateLayout();
                 return;
             }
         }
@@ -45,12 +50,12 @@ public class PlatformSpawner : MonoBehaviour
     /// <summary>
     /// Replaces an old platform by destroying it, re-sorting the array
     /// and then creating a new platform for the last iteration of the array.
+    /// Then generates the layout of each platform in the Platform Generation class.
     /// </summary>
     /// <param name="xPosition">xPosition of the new platform</param>
     private void ReplaceOldPlatform(float xPosition)
     {
-        
-
+        Debug.Log("Replacing old Platform");
         // Destroy the first platform
         Destroy(platforms[0]);
         for(int i = 0; i < platforms.Length; i++)
@@ -65,6 +70,7 @@ public class PlatformSpawner : MonoBehaviour
                 // Create a new platform
                 GameObject newPlatform = Instantiate(platformPrefab, new Vector3(xPosition, 0.0f, 0.0f), Quaternion.identity);
                 platforms[i] = newPlatform;
+                newPlatform.GetComponent<PlatformGeneration>().GenerateLayout();
             }
         }
     }

@@ -10,7 +10,9 @@ public class CameraMover : MonoBehaviour
     [SerializeField] private float moveSpeed = 5.0f;
 
     // Camera starting position to line up with the track
-    private Vector3 cameraStartPosition = new Vector3(0.0f, 6.0f, 9.0f);
+    [SerializeField] private Vector3 cameraStartPosition = new Vector3(0.0f, 6.0f, 9.0f);
+
+    private List<Transform> roverPositions = new List<Transform>();
 
     // Position of the camera along the travel line
     private float currentCameraPosition = 0.0f;
@@ -24,12 +26,38 @@ public class CameraMover : MonoBehaviour
     }
 
     /// <summary>
+    /// Adds a rover to the list of Type Rover to be used
+    /// for finding the rover in the lead of the track.
+    /// </summary>
+    /// <param name="newIndex"></param>
+    public void AddNewRoverToList(Transform newIndex)
+    {
+        roverPositions.Add(newIndex);
+    }
+
+    private float positionOfFrontRover;
+
+    /// <summary>
+    /// Does a search to find out which rover is ahead of the other
+    /// rovers. Then matches the camera position to it.
+    /// </summary>
+    private void FindPriority()
+    {
+        foreach(var position in roverPositions)
+        {
+            if (position != null && position.position.x < positionOfFrontRover)
+            {
+                positionOfFrontRover = position.position.x;
+            }
+        }
+    }
+
+    /// <summary>
     /// Moves the camera along the travel line.
     /// </summary>
     private void MoveCamera()
     {
-        currentCameraPosition += movementDirection * Time.deltaTime * moveSpeed;
-        transform.position = new Vector3(currentCameraPosition, transform.position.y, transform.position.z);
+        transform.position = new Vector3(positionOfFrontRover, transform.position.y, transform.position.z);
     }
 
     // Start is called before the first frame update
@@ -43,5 +71,6 @@ public class CameraMover : MonoBehaviour
     void Update()
     {
         MoveCamera();
+        FindPriority();
     }
 }
