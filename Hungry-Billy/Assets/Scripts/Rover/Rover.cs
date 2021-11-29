@@ -54,7 +54,7 @@ public class Rover : MonoBehaviour
     /// </summary>
     void AddGravity()
     {
-        roverController.Move(new Vector3(0.0f, -2.0f, 0.0f) * Time.deltaTime);
+        roverController.Move(new Vector3(0.0f, -9.81f, 0.0f) * Time.deltaTime);
     }
 
     /// <summary>
@@ -91,6 +91,20 @@ public class Rover : MonoBehaviour
         Debug.Log("Target Hit: Attacking");
         currentAttackTarget = target;
         attack = true;
+    }
+
+    /// <summary>
+    /// Damages the rover and checks if the rover
+    /// has died.
+    /// </summary>
+    /// <param name="damage"></param>
+    public void Damage(int damage)
+    {
+        health -= damage;
+        if(health <= 0)
+        { 
+            Destroy(gameObject);
+        }
     }
 
     /// <summary>
