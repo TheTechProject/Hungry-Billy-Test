@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
 
     List<GameObject> targetsInRange = new List<GameObject>();
 
-    private float attackCooldown;
+    [SerializeField] private float attackCooldown = 2.0f;
     private float attackTimer;
 
     public void TakeDamage(int damage)
@@ -24,13 +24,28 @@ public class Enemy : MonoBehaviour
         Debug.Log("Target Entered Area");
     }
 
+    public void RemoveTarget(GameObject target)
+    {
+        targetsInRange.Remove(target);
+        Debug.Log("Target Exited Area");
+    }
+
     private void AttackTarget()
     {
-        currentTarget = targetsInRange[0];
-
-        if(attackTimer >= attackCooldown)
+        currentTarget = null;
+        for(int i = 0; i < targetsInRange.Count; i++)
         {
-            currentTarget.
+            if(targetsInRange[i] != null)
+            {
+                currentTarget = targetsInRange[i];
+                break;
+            }
+        }
+
+        if(attackTimer >= attackCooldown && currentTarget != null)
+        {
+            currentTarget.GetComponent<Rover>().Damage(25);
+            attackTimer = 0.0f;
         }
     }    
 
@@ -49,7 +64,9 @@ public class Enemy : MonoBehaviour
         }
 
         attackTimer += Time.deltaTime;
-
-        AttackTarget();
+        if (targetsInRange.Count != 0)
+        {
+            AttackTarget();
+        }
     }
 }
